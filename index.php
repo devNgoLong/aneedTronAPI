@@ -4,4 +4,4 @@ require_once "vendor/autoload.php";
 
 $class = new \Aneed\TronAPI\AneedTronAPI();
 
-var_dump($class->createdAddress(100));
+var_dump($class->createdAddress(1));
