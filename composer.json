@@ -1,0 +1,41 @@
+{
+    "name": "aneed/api_tron",
+    "description": ":package_description",
+    "keywords": [
+        "API TRONG",
+        "api_tron"
+    ],
+    "homepage": "https://github.com/php-loep/:package_name",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "NGO VAN LONG",
+            "email": "dev.ngovanlong@gmail.com",
+            "homepage": "https://aneed.vn",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.4",
+        "guzzlehttp/guzzle": "^7.4",
+        "iexbase/tron-api": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aneed\\TronAPI\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aneed\\TronAPI\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
