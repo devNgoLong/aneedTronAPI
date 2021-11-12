@@ -5,6 +5,7 @@ namespace Aneed\TronAPI;
 use IEXBase\TronAPI\Exception\TRC20Exception;
 use IEXBase\TronAPI\Exception\TronException;
 use IEXBase\TronAPI\Provider\HttpProvider;
+use IEXBase\TronAPI\Tron;
 
 
 class AneedTronAPI
@@ -29,8 +30,8 @@ class AneedTronAPI
         $eventServer = new HttpProvider('https://api.trongrid.io');
 
         try {
-            $tron = new \IEXBase\TronAPI\Tron($fullNode, $solidityNode, $eventServer);
-        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer);
+        } catch (TronException $e) {
             exit($e->getMessage());
         }
 
@@ -64,8 +65,8 @@ class AneedTronAPI
         $solidityNode = new HttpProvider('https://api.trongrid.io');
         $eventServer = new HttpProvider('https://api.trongrid.io');
         try {
-            $tron = new \IEXBase\TronAPI\Tron($fullNode, $solidityNode, $eventServer);
-        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer);
+        } catch (TronException $e) {
             exit($e->getMessage());
         }
         $tron->setAddress($address);
@@ -96,8 +97,8 @@ class AneedTronAPI
         $solidityNode = new HttpProvider('https://api.trongrid.io');
         $eventServer = new HttpProvider('https://api.trongrid.io');
         try {
-            $tron = new \IEXBase\TronAPI\Tron($fullNode, $solidityNode, $eventServer);
-        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer);
+        } catch (TronException $e) {
             exit($e->getMessage());
         }
         $tron->setAddress($address);
@@ -110,5 +111,89 @@ class AneedTronAPI
         }
         return $sendArr;
     }
+
+    /**
+     * Send TRX to arr Address
+     *
+     * @param array $addresses
+     * @param array $tokens
+     * @return array
+     */
+    static public function getBalance(array $addresses = [], array $tokens = []) {
+        $fullNode = new HttpProvider('https://api.trongrid.io');
+        $solidityNode = new HttpProvider('https://api.trongrid.io');
+        $eventServer = new HttpProvider('https://api.trongrid.io');
+        try {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer);
+        } catch (TronException $e) {
+            exit($e->getMessage());
+        }
+
+        $balances = array();
+
+        foreach ($addresses as $address) {
+
+            try {
+                $tron->setAddress($address);
+            } catch (\Exception $e) {
+                continue;
+            }
+
+            foreach ($tokens as $token) {
+                try {
+                    $contract = $tron->contract($token);
+                    $balance = array('token' => $token, 'balance' => $contract->balanceOf());
+                    array_push($balances, $balance);
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+        }
+        return $balances;
+    }
+
+    /**
+     * Send TRX to arr Address
+     *
+     * @param array $wallets
+     * @param string $addressRecive
+     * @param string $tokenContract
+     * @return array
+     */
+    static public function collectorToken(array $wallets = [], string $addressRecive, string $tokenContract) {
+        $fullNode = new HttpProvider('https://api.trongrid.io');
+        $solidityNode = new HttpProvider('https://api.trongrid.io');
+        $eventServer = new HttpProvider('https://api.trongrid.io');
+        try {
+            $tron = new Tron($fullNode, $solidityNode, $eventServer);
+        } catch (TronException $e) {
+            exit($e->getMessage());
+        }
+        $walletSucces = array();
+        foreach ($wallets as $wallet) {
+            try {
+                $tron->setAddress($wallet['address']);
+                $tron->setPrivateKey($wallet['privateKey']);
+                $contract = $tron->contract($tokenContract);
+                $amount = $contract->balanceOf();
+                if($amount > 0) {
+                    $send = $contract->transfer($addressRecive, $amount, $wallet['address']);
+                    if(isset($send->result) & $send->result == true) {
+                        array_push($walletSucces, [$wallet['address'], true, $send]);
+                    } else {
+                        array_push($walletSucces, [$wallet['address'], false]);
+                    }
+                } else {
+                    array_push($walletSucces, [$wallet['address'], false]);
+                }
+            } catch (\Exception $e) {
+                array_push($walletSucces, [$wallet['address'], false]);
+                continue;
+            }
+        }
+        return $walletSucces;
+    }
+
+
 
 }
