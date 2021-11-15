@@ -11,14 +11,14 @@ use IEXBase\TronAPI\Tron;
 class AneedTronAPI
 {
     /**
-     * Create a new Skeleton Instance
+     * Create a new TRON custom
      */
     public function __construct()
     {
     }
 
     /**
-     * Friendly welcome
+     * Created new address
      *
      * @param $number
      * @return array Returns the address and privateKey
@@ -55,7 +55,7 @@ class AneedTronAPI
      *
      * @param string $address
      * @param string $private
-     * @param array $arrAddressAndAmount
+     * @param array $arrAddressAndAmount | ['address' => 'address1', 'amount' => '123']
      * @return array
      * @throws TronException
      */
@@ -86,7 +86,7 @@ class AneedTronAPI
      * @param string $address
      * @param string $private
      * @param string $contract
-     * @param array $arrAddressAndAmount
+     * @param array $arrAddressAndAmount  | ['address' => 'address1', 'amount' => '123']
      * @return array
      * @throws TronException
      * @throws TRC20Exception
@@ -115,8 +115,8 @@ class AneedTronAPI
     /**
      * Send TRX to arr Address
      *
-     * @param array $addresses
-     * @param array $tokens
+     * @param array $addresses | ['address 1','address 3','address 2']
+     * @param array $tokens | ['token 1','token 3','token 2']
      * @return array
      */
     static public function getBalance(array $addresses = [], array $tokens = []) {
@@ -155,7 +155,7 @@ class AneedTronAPI
     /**
      * Send TRX to arr Address
      *
-     * @param array $wallets
+     * @param array $wallets | address and privateKey
      * @param string $addressRecive
      * @param string $tokenContract
      * @return array
@@ -193,7 +193,4 @@ class AneedTronAPI
         }
         return $walletSucces;
     }
-
-
-
 }
